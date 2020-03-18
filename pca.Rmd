@@ -22,9 +22,11 @@ dt%>% ggplot(aes(x = Profits,y = value,color =variable ))+geom_line()
 ```
 
 ```{r}
-pca <- prcomp(df, scale. = F)
-pca$x[,1:2]
-
+scaled_data <- scale(df)# scaled data
+head(scaled_data)
+pca <- prcomp(scaled_data, scale. = F) # get pca of the data
+x <- pca$x[,1:2]
+head(x)
 stdpca <- pca$sdev
 
 varpca <- stdpca^2
