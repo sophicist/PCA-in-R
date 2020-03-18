@@ -1,0 +1,68 @@
+---
+title: "Njeri"
+author: "Kamau Kamau"
+date: "18/03/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+dir()
+df <- readxl::read_excel("Book1_percentages.xlsx")
+head(df)
+library(dplyr)
+library(reshape2)
+library(tidyverse)
+df<- df %>% select(Profits,Eunice,Logistic,five_percent) 
+dt<- melt(df,id.vars = "Profits")#
+dt%>% ggplot(aes(x = Profits,y = value,color =variable ))+geom_line()
+```
+
+```{r}
+pca <- prcomp(df, scale. = F)
+pca$x[,1:2]
+
+stdpca <- pca$sdev
+
+varpca <- stdpca^2
+
+prop_var <- varpca/sum(varpca)
+
+
+```
+
+
+# Elbow rule
+
+```{r, fig.width = 6.6, fig.height = 5}
+
+
+plot(prop_var, xlab = "Principal Component",
+     ylab = "Proportion of Variance Explained",
+     type = "b", xlim = c(0, 10))
+
+```
+
+
+
+```{r, fig.width = 6.6, fig.height = 5 }
+
+plot(cumsum(prop_var), xlab = "Principal Component",
+     ylab = "Cumulative Proportion of Variance Explained",
+     type = "b", xlim = c(0, 10))
+
+```
+
+# Model
+
+```{r}
+dt <- pca$x
+
+j <- sample(1:nrow(dt),size  = nrow(dt)*0.8)
+train <- dt[j,]
+test <- dt[-j,]
+```
+
